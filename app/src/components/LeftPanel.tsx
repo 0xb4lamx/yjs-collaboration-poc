@@ -15,8 +15,6 @@ export const LeftPanel = () => {
 
   const handleAddRect = () => {
     const rect = new fabric.Rect({
-      left: 0,
-      top: 0,
       fill: "gray",
       width: 100,
       height: 100,
@@ -27,8 +25,6 @@ export const LeftPanel = () => {
 
   const handleAddCircle = () => {
     const circle = new fabric.Circle({
-      left: 0,
-      top: 0,
       fill: "gray",
       radius: 50,
     });
@@ -38,8 +34,6 @@ export const LeftPanel = () => {
 
   const handleAddTriangle = () => {
     const triangle = new fabric.Triangle({
-      left: 0,
-      top: 0,
       fill: "gray",
       width: 100,
       height: 100,
@@ -50,8 +44,6 @@ export const LeftPanel = () => {
 
   const handleAddText = () => {
     const text = new fabric.Textbox("Text", {
-      left: 0,
-      top: 0,
       fill: "gray",
       width: 100,
       height: 100,
