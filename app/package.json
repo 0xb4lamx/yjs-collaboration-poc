@@ -12,11 +12,13 @@
   "dependencies": {
     "autoprefixer": "^10.4.19",
     "clsx": "^2.1.0",
+    "fabric": "beta",
     "lucide-react": "^0.361.0",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwind-merge": "^2.2.2"
+    "tailwind-merge": "^2.2.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "next",

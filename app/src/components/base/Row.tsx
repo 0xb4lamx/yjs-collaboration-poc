@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 
 type Props = {
   children: React.ReactNode;
@@ -9,13 +9,13 @@ type Props = {
   crossCenter?: boolean;
 };
 
-export const Col = forwardRef<HTMLDivElement, Props>(
+export const Row = forwardRef<HTMLDivElement, Props>(
   ({ expanded, center, crossCenter, className, ...rest }, ref) => {
     return (
       <div
         className={cn(
-          "flex flex-col",
-          expanded && "flex-1",
+          "flex flex-row",
+          expanded && "flex-grow",
           center && "items-center",
           crossCenter && "justify-center",
           className
