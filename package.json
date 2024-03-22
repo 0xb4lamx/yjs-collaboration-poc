@@ -3,8 +3,8 @@
   "private": "true",
   "workspaces": [
     "packages/*",
-    "app/*",
-    "server/*"
+    "app",
+    "server"
   ],
   "scripts": {
     "dev:app": "cd app && bun dev",
