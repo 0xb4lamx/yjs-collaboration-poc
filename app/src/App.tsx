@@ -2,9 +2,11 @@ import {
   CircleIcon,
   MinusIcon,
   PlusIcon,
+  RedoIcon,
   SquareIcon,
   TriangleIcon,
   TypeIcon,
+  UndoIcon,
 } from "lucide-react";
 import { cn } from "./lib/utils";
 import { Col } from "./components/Col";
@@ -15,7 +17,10 @@ const App = () => {
   return (
     <Col className="bg-gray-100 h-screen relative">
       <LeftPanel />
-      <ZoomControls />
+      <Row className="gap-3 absolute bottom-5 left-[50%] transform -translate-x-1/2">
+        <UndoRedo />
+        <ZoomControls />
+      </Row>
     </Col>
   );
 };
@@ -43,13 +48,10 @@ const ZoomControls = () => {
   return (
     <Row
       center
-      className={cn(
-        "absolute bottom-5 left-[50%] transform -translate-x-1/2",
-        "bg-background pl-3 pr-4 py-1 rounded-xl rounded-tr-xl shadow-md gap-2"
-      )}
+      className={cn("bg-background pl-3 pr-4 py-1 rounded-lg shadow-lg gap-2")}
     >
       <MinusIcon
-        size="16"
+        size="14"
         className="cursor-pointer hover:text-primary"
         onClick={() => setZoom(zoom - 10)}
       />
@@ -57,10 +59,22 @@ const ZoomControls = () => {
         {zoom}%
       </div>
       <PlusIcon
-        size="16"
+        size="14"
         className="cursor-pointer hover:text-primary"
         onClick={() => setZoom(zoom + 10)}
       />
+    </Row>
+  );
+};
+
+const UndoRedo = () => {
+  return (
+    <Row
+      center
+      className={cn("bg-background pl-3 pr-4 py-1 rounded-lg shadow-lg gap-3")}
+    >
+      <UndoIcon size="14" className="cursor-pointer hover:text-primary" />
+      <RedoIcon size="14" className="cursor-pointer hover:text-primary" />
     </Row>
   );
 };
