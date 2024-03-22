@@ -55,6 +55,8 @@ export const Canvas = () => {
       tr: false,
       mtr: false,
     });
+    // disable board selection
+    rect.selectable = false;
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
