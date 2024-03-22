@@ -1,0 +1,21 @@
+{
+  "name": "workspaces",
+  "private": "true",
+  "workspaces": [
+    "packages/*",
+    "app/*",
+    "server/*"
+  ],
+  "scripts": {
+    "dev:app": "cd app && bun dev",
+    "dev:server": "cd server && bun dev",
+    "dev": "concurrently --names 'expo,hono' -c 'bgCyan.bold,bgYellow.bold' 'bun dev:app' 'bun dev:server'"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "concurrently": "^8.2.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
