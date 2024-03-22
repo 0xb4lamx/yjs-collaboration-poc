@@ -22,6 +22,11 @@ export const ZoomControls = () => {
       const point = new Point(x, y);
       const newZoom = zoom - opt.e.deltaY / 10;
 
+      // prevent zooming out too much
+      if (newZoom < 10) {
+        return;
+      }
+
       canvas.zoomToPoint(point, newZoom / 100);
       mainStoreActions.setZoom(newZoom);
     };
