@@ -10,6 +10,7 @@ export const useMainStore = create(() => ({
   canvas: new Canvas() as Canvas,
   zoom: 100,
   renderedFigureMap: new Map<string, FabricObject>(),
+  selectedFigureId: "",
 
   // yjs
   isConnected: false,
@@ -54,12 +55,26 @@ export const mainStoreActions = {
       });
     }
   },
+  removeFigure: (id: string) => {
+    const state = getState();
+    state.yDoc.transact(() => {
+      state.yFigureIds.delete(state.yFigureIds.toArray().indexOf(id));
+      state.yFigureConfigMap.delete(id);
+    });
+  },
+  setSelectedFigureId: (id: string) => setState({ selectedFigureId: id }),
 
   // renderedFigureMap
   setRenderedFigure: (id: string, figure: FabricObject) =>
     setState((state) => ({
       renderedFigureMap: new Map(state.renderedFigureMap.set(id, figure)),
     })),
+  removeRenderedFigure: (id: string) =>
+    setState((state) => {
+      const newMap = new Map(state.renderedFigureMap);
+      newMap.delete(id);
+      return { renderedFigureMap: newMap };
+    }),
 
   setupYjs: (params: { awareness: Awareness; myUserId: string; yDoc: Y.Doc }) =>
     setState(() => ({

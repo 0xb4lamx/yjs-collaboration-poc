@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import * as fabric from "fabric";
 import { Figure } from "../domain";
-import { YMapEvent } from "yjs";
+import { YArrayEvent, YMapEvent } from "yjs";
 
 export const useFigureRenderer = () => {
   const yFigureIds = useMainStore((s) => s.yFigureIds);
@@ -32,7 +32,22 @@ export const useFigureRenderer = () => {
 
     let unobserverConfigs: Array<() => void> = [];
 
-    const figureIdsObserver = () => {
+    const figureIdsObserver = (e?: YArrayEvent<string>) => {
+      if (e && e.delta.length > 0) {
+        const currentIds = Array.from(renderedFigureMap.keys());
+        const newIds = yFigureIds.toArray();
+
+        currentIds
+          .filter((id) => !newIds.includes(id))
+          .forEach((id) => {
+            const figure = renderedFigureMap.get(id);
+            if (figure) {
+              canvas.remove(figure);
+              mainStoreActions.removeRenderedFigure(id);
+            }
+          });
+      }
+
       unobserverConfigs.forEach((unobserver) => unobserver());
       unobserverConfigs = [];
 
@@ -56,8 +71,6 @@ export const useFigureRenderer = () => {
               const newFigure = initNew(jsonConfig);
 
               canvas.add(newFigure);
-              canvas.centerObject(newFigure);
-
               mainStoreActions.setRenderedFigure(id, newFigure);
             }
           };
@@ -82,7 +95,7 @@ export const useFigureRenderer = () => {
   }, [canvas, yFigureConfigMap, yFigureIds, renderedFigureMap]);
 
   // ------------------------------
-  // modified listener
+  // modified figure listener
   // ------------------------------
   useEffect(() => {
     const onFigureModified = (
@@ -95,28 +108,37 @@ export const useFigureRenderer = () => {
       });
     };
 
-    yFigureIds.forEach((id) => {
+    const unsubscribeCallbacks = yFigureIds.map((id) => {
       const renderedFigure = renderedFigureMap.get(id);
+
       if (renderedFigure) {
-        renderedFigure.on("modified", () =>
-          onFigureModified(id, renderedFigure)
-        );
-        renderedFigure.on("moving", () => onFigureModified(id, renderedFigure));
+        const figureModifiedCallback = () =>
+          onFigureModified(id, renderedFigure);
+
+        const figureSelectedCallback = () =>
+          mainStoreActions.setSelectedFigureId(id);
+
+        const figureDeselectedCallback = () =>
+          mainStoreActions.setSelectedFigureId("");
+
+        renderedFigure.on("modified", figureModifiedCallback);
+        renderedFigure.on("moving", figureModifiedCallback);
+        renderedFigure.on("selected", figureSelectedCallback);
+        renderedFigure.on("deselected", figureDeselectedCallback);
+
+        return () => {
+          renderedFigure.off("modified", figureModifiedCallback);
+          renderedFigure.off("moving", figureModifiedCallback);
+          renderedFigure.off("selected", figureSelectedCallback);
+          renderedFigure.off("deselected", figureDeselectedCallback);
+        };
       }
+
+      return () => {};
     });
 
     return () => {
-      yFigureIds.forEach((id) => {
-        const renderedFigure = renderedFigureMap.get(id);
-        if (renderedFigure) {
-          renderedFigure.off("modified", () =>
-            onFigureModified(id, renderedFigure)
-          );
-          renderedFigure.off("moving", () =>
-            onFigureModified(id, renderedFigure)
-          );
-        }
-      });
+      unsubscribeCallbacks.forEach((unsubscribe) => unsubscribe());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [yFigureIds.toArray().length, renderedFigureMap.keys.length]);
