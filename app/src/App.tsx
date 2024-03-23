@@ -7,10 +7,12 @@ import { LeftPanel } from "./components/LeftPanel";
 import { useInitYjsWebsocket } from "./hooks/useInitYjsWebsocket";
 import { useCanvasListeners } from "./hooks/useCanvasListeners";
 import { UsersPointer } from "./components/UsersPointer";
+import { useFigureRenderer } from "./hooks/useFigureRenderer";
 
 const App = () => {
   useInitYjsWebsocket();
   useCanvasListeners();
+  useFigureRenderer();
 
   return (
     <Col className="bg-gray-100 h-screen relative">

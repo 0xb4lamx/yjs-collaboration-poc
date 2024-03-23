@@ -10,7 +10,6 @@ export const useCanvasListeners = () => {
     const mouseMoveHandler = (e: TPointerEventInfo<TPointerEvent>) => {
       if (!awareness) return;
 
-      console.log(e);
       const { x, y } = e.scenePoint;
       awareness.setLocalStateField("cursor", { x, y });
     };

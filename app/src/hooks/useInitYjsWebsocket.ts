@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import { generateColor, generateName } from "../lib/utils";
-import { User, useMainStore } from "../lib/mainStore";
+import { useMainStore } from "../lib/mainStore";
+import { User } from "../domain";
 import { nanoid } from "nanoid";
 
 export const useInitYjsWebsocket = () => {
