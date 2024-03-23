@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import { generateColor, generateName } from "../lib/utils";
@@ -8,9 +8,15 @@ import { User } from "../domain";
 import { nanoid } from "nanoid";
 
 export const useInitYjsWebsocket = () => {
-  const roomName = "my-room-2";
+  const roomName = "my-room-3";
+  const isInitialRender = useRef(true);
 
   useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+
     // --------------------------------
     // Initialize Yjs
     // --------------------------------
