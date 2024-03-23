@@ -73,6 +73,7 @@ export const useFigureRenderer = () => {
       });
     };
 
+    figureIdsObserver();
     yFigureIds.observe(figureIdsObserver);
 
     return () => {
