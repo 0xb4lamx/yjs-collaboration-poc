@@ -2,16 +2,18 @@
 import { useEffect, useRef } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import { generateColor, generateName } from "../lib/utils";
+import { generateColor, generateName, routerUtils } from "../lib/utils";
 import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import { User } from "../domain";
 import { nanoid } from "nanoid";
 
 export const useInitYjsWebsocket = () => {
-  const roomName = "my-room-5";
+  const roomName = routerUtils.getBoardId();
   const isInitialRender = useRef(true);
 
   useEffect(() => {
+    if (!roomName) return;
+
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;

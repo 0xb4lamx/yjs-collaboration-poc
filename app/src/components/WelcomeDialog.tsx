@@ -7,14 +7,14 @@ import {
 } from "./base/Dialog";
 import { Row } from "./base/Row";
 import { Col } from "./base/Col";
-import { cn } from "../lib/utils";
+import { cn, routerUtils } from "../lib/utils";
 import { Input } from "./base/Input";
 import { Label } from "@radix-ui/react-label";
 import { ScrollArea } from "./base/ScrollArea";
 import { useMainStore } from "../lib/mainStore";
 
 export const WelcomeDialog = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(routerUtils.isHome());
   const isLoggedIn = useMainStore((state) => state.isLoggedIn);
 
   return (
@@ -41,7 +41,13 @@ export const WelcomeDialog = () => {
                 className="mt-2 bg-slate-50 border border-slate-200 rounded-lg"
               >
                 <Col expanded center crossCenter>
-                  <div className="w-56 h-56 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer" />
+                  <div
+                    className="w-56 h-56 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer"
+                    onClick={() => {
+                      routerUtils.newBoard();
+                      setIsOpen(false);
+                    }}
+                  />
                 </Col>
               </Row>
             </Col>

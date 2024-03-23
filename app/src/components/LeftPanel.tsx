@@ -68,7 +68,7 @@ export const LeftPanel = () => {
       center
       className={cn(
         "absolute left-0 top-[50%] transform -translate-y-1/2",
-        "bg-background pl-3 pr-4 py-6 rounded-tr-xl rounded-br-xl shadow-xl gap-5"
+        "bg-background px-4 py-6 rounded-tr-xl rounded-br-xl shadow-xl gap-5"
       )}
     >
       <MousePointer2Icon
