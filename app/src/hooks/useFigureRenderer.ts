@@ -50,8 +50,7 @@ export const useFigureRenderer = () => {
                 const value = yConfig.get(key);
                 renderedFigure.set(key, value);
               });
-              renderedFigure.set("dirty", true);
-              canvas.renderAll();
+              canvas.requestRenderAll();
             } else {
               const jsonConfig = yConfig.toJSON() as Figure;
               const newFigure = initNew(jsonConfig);
@@ -86,7 +85,7 @@ export const useFigureRenderer = () => {
   // modified listener
   // ------------------------------
   useEffect(() => {
-    const modifiedListener = (
+    const onFigureModified = (
       id: string,
       figureObject: fabric.FabricObject
     ) => {
@@ -100,8 +99,9 @@ export const useFigureRenderer = () => {
       const renderedFigure = renderedFigureMap.get(id);
       if (renderedFigure) {
         renderedFigure.on("modified", () =>
-          modifiedListener(id, renderedFigure)
+          onFigureModified(id, renderedFigure)
         );
+        renderedFigure.on("moving", () => onFigureModified(id, renderedFigure));
       }
     });
 
@@ -110,7 +110,10 @@ export const useFigureRenderer = () => {
         const renderedFigure = renderedFigureMap.get(id);
         if (renderedFigure) {
           renderedFigure.off("modified", () =>
-            modifiedListener(id, renderedFigure)
+            onFigureModified(id, renderedFigure)
+          );
+          renderedFigure.off("moving", () =>
+            onFigureModified(id, renderedFigure)
           );
         }
       });
