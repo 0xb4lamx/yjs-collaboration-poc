@@ -1,7 +1,8 @@
 {
   "name": "server",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "y-ws": "HOST=localhost PORT=1234 bunx y-websocket"
   },
   "dependencies": {
     "@hono/trpc-server": "^0.1.1",
@@ -9,6 +10,7 @@
     "shared": "workspace:*",
     "superjson": "^2.2.1",
     "web-auth-library": "^1.0.3",
+    "y-websocket": "^2.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

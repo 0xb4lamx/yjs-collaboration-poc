@@ -7,9 +7,10 @@
     "server"
   ],
   "scripts": {
+    "y-ws": "cd server && bun y-ws",
     "dev:app": "cd app && bun dev",
-    "dev:server": "cd server && bun dev",
-    "dev": "concurrently --names 'expo,hono' -c 'bgCyan.bold,bgYellow.bold' 'bun dev:app' 'bun dev:server'"
+    "dev:hono": "cd server && bun dev",
+    "dev": "concurrently --names 'app,hono,y-ws' -c 'bgCyan.bold,bgYellow.bold,bgBlue.bold' 'bun dev:app' 'bun dev:hono' 'bun y-ws'"
   },
   "devDependencies": {
     "bun-types": "latest",
