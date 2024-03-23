@@ -30,7 +30,7 @@ export const useFigureRenderer = () => {
       }
     };
 
-    let unobserverConfigs: Array<() => void> = [];
+    let removeObserverConfigs: Array<() => void> = [];
 
     const figureIdsObserver = (e?: YArrayEvent<string>) => {
       if (e && e.delta.length > 0) {
@@ -48,8 +48,8 @@ export const useFigureRenderer = () => {
           });
       }
 
-      unobserverConfigs.forEach((unobserver) => unobserver());
-      unobserverConfigs = [];
+      removeObserverConfigs.forEach((unobserver) => unobserver());
+      removeObserverConfigs = [];
 
       yFigureIds.forEach((id) => {
         const yConfig = yFigureConfigMap.get(id);
@@ -78,7 +78,7 @@ export const useFigureRenderer = () => {
           yConfigObserver();
           yConfig.observe(yConfigObserver);
 
-          unobserverConfigs.push(() => {
+          removeObserverConfigs.push(() => {
             yConfig.unobserve(yConfigObserver);
           });
         }
@@ -90,7 +90,7 @@ export const useFigureRenderer = () => {
 
     return () => {
       yFigureIds.unobserve(figureIdsObserver);
-      unobserverConfigs.forEach((unobserver) => unobserver());
+      removeObserverConfigs.forEach((unobserver) => unobserver());
     };
   }, [canvas, yFigureConfigMap, yFigureIds, renderedFigureMap]);
 
