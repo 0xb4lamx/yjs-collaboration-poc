@@ -2,9 +2,12 @@ import { useEffect } from "react";
 import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import * as fabric from "fabric";
 import { Figure } from "../domain";
+import { YMapEvent } from "yjs";
 
 export const useFigureRenderer = () => {
-  const figures = useMainStore((s) => s.figures);
+  const yFigureIds = useMainStore((s) => s.yFigureIds);
+  const yFigureConfigMap = useMainStore((s) => s.yFigureConfigMap);
+
   const renderedFigureMap = useMainStore((s) => s.renderedFigureMap);
   const canvas = useMainStore((s) => s.canvas);
 
@@ -27,21 +30,56 @@ export const useFigureRenderer = () => {
       }
     };
 
-    figures.forEach(({ id, type, ...config }) => {
-      const renderedFigure = renderedFigureMap.get(id);
+    let unobserverConfigs: Array<() => void> = [];
 
-      if (renderedFigure) {
-        renderedFigure.set(config);
-        renderedFigure.set("dirty", true);
-      } else {
-        const newFigure = initNew({ type, ...config });
-        canvas.add(newFigure);
-        canvas.centerObject(newFigure);
+    const figureIdsObserver = () => {
+      unobserverConfigs.forEach((unobserver) => unobserver());
+      unobserverConfigs = [];
 
-        mainStoreActions.setRenderedFigure(id, newFigure);
-      }
-    });
-  }, [canvas, figures, renderedFigureMap]);
+      yFigureIds.forEach((id) => {
+        const yConfig = yFigureConfigMap.get(id);
+
+        if (yConfig) {
+          const yConfigObserver = (event?: YMapEvent<unknown>) => {
+            const renderedFigure = renderedFigureMap.get(id);
+
+            if (renderedFigure) {
+              event?.changes.keys.forEach((_change, key) => {
+                if (key === "type") return;
+
+                const value = yConfig.get(key);
+                renderedFigure.set(key, value);
+              });
+              renderedFigure.set("dirty", true);
+              canvas.renderAll();
+            } else {
+              const jsonConfig = yConfig.toJSON() as Figure;
+              const newFigure = initNew(jsonConfig);
+
+              canvas.add(newFigure);
+              canvas.centerObject(newFigure);
+
+              mainStoreActions.setRenderedFigure(id, newFigure);
+            }
+          };
+
+          yConfigObserver();
+          yConfig.observe(yConfigObserver);
+
+          unobserverConfigs.push(() => {
+            yConfig.unobserve(yConfigObserver);
+          });
+        }
+      });
+    };
+
+    yFigureIds.observe(figureIdsObserver);
+
+    return () => {
+      yFigureIds.unobserve(figureIdsObserver);
+      unobserverConfigs.forEach((unobserver) => unobserver());
+    };
+  }, [canvas, yFigureConfigMap, yFigureIds, renderedFigureMap]);
 
   // ------------------------------
   // modified listener
@@ -57,7 +95,7 @@ export const useFigureRenderer = () => {
       });
     };
 
-    figures.forEach(({ id }) => {
+    yFigureIds.forEach((id) => {
       const renderedFigure = renderedFigureMap.get(id);
       if (renderedFigure) {
         renderedFigure.on("modified", () =>
@@ -67,7 +105,7 @@ export const useFigureRenderer = () => {
     });
 
     return () => {
-      figures.forEach(({ id }) => {
+      yFigureIds.forEach((id) => {
         const renderedFigure = renderedFigureMap.get(id);
         if (renderedFigure) {
           renderedFigure.off("modified", () =>
@@ -77,5 +115,5 @@ export const useFigureRenderer = () => {
       });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [figures.length, renderedFigureMap.keys.length]);
+  }, [yFigureIds.toArray().length, renderedFigureMap.keys.length]);
 };

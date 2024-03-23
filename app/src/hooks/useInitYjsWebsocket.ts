@@ -3,22 +3,22 @@ import { useEffect } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import { generateColor, generateName } from "../lib/utils";
-import { useMainStore } from "../lib/mainStore";
+import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import { User } from "../domain";
 import { nanoid } from "nanoid";
 
 export const useInitYjsWebsocket = () => {
-  const roomName = "my-roomname";
+  const roomName = "my-room-2";
 
   useEffect(() => {
     // --------------------------------
     // Initialize Yjs
     // --------------------------------
-    const doc = new Y.Doc();
+    const yDoc = new Y.Doc();
     const wsProvider = new WebsocketProvider(
       import.meta.env.VITE_WS_URL,
       roomName,
-      doc
+      yDoc
     );
 
     wsProvider.on("status", (e: any) => {
@@ -31,7 +31,11 @@ export const useInitYjsWebsocket = () => {
 
     const awareness = wsProvider.awareness;
     const myUserId = nanoid();
-    useMainStore.setState({ awareness, myUserId });
+    mainStoreActions.setupYjs({
+      awareness,
+      myUserId,
+      yDoc,
+    });
 
     const metadata: User["metadata"] = {
       id: myUserId,
