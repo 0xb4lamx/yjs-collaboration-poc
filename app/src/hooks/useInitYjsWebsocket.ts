@@ -8,7 +8,7 @@ import { User } from "../domain";
 import { nanoid } from "nanoid";
 
 export const useInitYjsWebsocket = () => {
-  const roomName = "my-room-3";
+  const roomName = "my-room-4";
   const isInitialRender = useRef(true);
 
   useEffect(() => {

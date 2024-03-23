@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import { TPointerEventInfo, TPointerEvent } from "fabric";
+import { Figure } from "../domain";
 
 export const useCanvasListeners = () => {
   const canvas = useMainStore((state) => state.canvas);
@@ -29,10 +30,8 @@ export const useCanvasListeners = () => {
   useEffect(() => {
     const keyDownHandler = (e: KeyboardEvent) => {
       if (e.key === "Delete") {
-        const selectedFigureId = useMainStore.getState().selectedFigureId;
-        if (!selectedFigureId) return;
-
-        mainStoreActions.removeFigure(selectedFigureId);
+        const activeObject = canvas.getActiveObject() as unknown as Figure;
+        mainStoreActions.removeFigure(activeObject.id);
       }
     };
 
@@ -40,5 +39,5 @@ export const useCanvasListeners = () => {
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, []);
+  }, [canvas]);
 };

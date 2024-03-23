@@ -15,7 +15,7 @@ export const useFigureRenderer = () => {
   // render figures
   // ------------------------------
   useEffect(() => {
-    const initNew = ({ type, ...config }: Omit<Figure, "id">) => {
+    const initNew = ({ type, ...config }: Figure) => {
       switch (type) {
         case "Rect":
           return new fabric.Rect(config);
@@ -115,22 +115,12 @@ export const useFigureRenderer = () => {
         const figureModifiedCallback = () =>
           onFigureModified(id, renderedFigure);
 
-        const figureSelectedCallback = () =>
-          mainStoreActions.setSelectedFigureId(id);
-
-        const figureDeselectedCallback = () =>
-          mainStoreActions.setSelectedFigureId("");
-
         renderedFigure.on("modified", figureModifiedCallback);
         renderedFigure.on("moving", figureModifiedCallback);
-        renderedFigure.on("selected", figureSelectedCallback);
-        renderedFigure.on("deselected", figureDeselectedCallback);
 
         return () => {
           renderedFigure.off("modified", figureModifiedCallback);
           renderedFigure.off("moving", figureModifiedCallback);
-          renderedFigure.off("selected", figureSelectedCallback);
-          renderedFigure.off("deselected", figureDeselectedCallback);
         };
       }
 

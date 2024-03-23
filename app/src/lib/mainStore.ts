@@ -3,14 +3,12 @@ import { Canvas } from "fabric";
 import { Awareness } from "y-protocols/awareness";
 import { Figure, User } from "../domain";
 import { FabricObject } from "fabric";
-import { nanoid } from "nanoid";
 import * as Y from "yjs";
 
 export const useMainStore = create(() => ({
   canvas: new Canvas() as Canvas,
   zoom: 100,
   renderedFigureMap: new Map<string, FabricObject>(),
-  selectedFigureId: "",
 
   // yjs
   isConnected: false,
@@ -28,10 +26,8 @@ export const mainStoreActions = {
   setZoom: (zoom: number) => setState({ zoom }),
 
   // figures
-  addFigure: (figure: Omit<Figure, "id">) => {
+  addFigure: (figure: Figure) => {
     const state = getState();
-
-    const id = nanoid();
 
     const yConfig = new Y.Map();
     Object.entries(figure).forEach(([key, value]) => {
@@ -39,8 +35,8 @@ export const mainStoreActions = {
     });
 
     state.yDoc.transact(() => {
-      state.yFigureIds.push([id]);
-      state.yFigureConfigMap.set(id, yConfig);
+      state.yFigureIds.push([figure.id]);
+      state.yFigureConfigMap.set(figure.id, yConfig);
     });
   },
   updateFigure: (id: string, figure: Figure) => {
@@ -62,7 +58,6 @@ export const mainStoreActions = {
       state.yFigureConfigMap.delete(id);
     });
   },
-  setSelectedFigureId: (id: string) => setState({ selectedFigureId: id }),
 
   // renderedFigureMap
   setRenderedFigure: (id: string, figure: FabricObject) =>

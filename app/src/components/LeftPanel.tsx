@@ -14,68 +14,53 @@ import { nanoid } from "nanoid";
 export const LeftPanel = () => {
   const canvas = useMainStore((s) => s.canvas);
 
-  const handleAddRect = () => {
+  const createBaseFigureConfig = () => {
     const center = canvas.getCenterPoint();
-    const rect = new fabric.Rect({
-      fill: "gray",
-      width: 100,
-      height: 100,
+    return {
+      id: nanoid(),
       top: center.y,
       left: center.x,
-    }).toObject();
+      fill: "gray",
+    };
+  };
 
-    mainStoreActions.addFigure({
-      type: "Rect",
-      ...rect,
-    });
+  const handleAddRect = () => {
+    const rect = new fabric.Rect({
+      ...createBaseFigureConfig(),
+      width: 100,
+      height: 100,
+    }).toObject(["id", "type"]);
+
+    mainStoreActions.addFigure(rect);
   };
 
   const handleAddCircle = () => {
-    const center = canvas.getCenterPoint();
     const circle = new fabric.Circle({
-      fill: "gray",
+      ...createBaseFigureConfig(),
       radius: 50,
-      top: center.y,
-      left: center.x,
-    }).toObject();
+    }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure({
-      type: "Circle",
-      ...circle,
-    });
+    mainStoreActions.addFigure(circle);
   };
 
   const handleAddTriangle = () => {
-    const center = canvas.getCenterPoint();
     const triangle = new fabric.Triangle({
-      fill: "gray",
+      ...createBaseFigureConfig(),
       width: 100,
       height: 100,
-      top: center.y,
-      left: center.x,
-    }).toObject();
+    }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure({
-      id: nanoid(),
-      type: "Triangle",
-      ...triangle,
-    });
+    mainStoreActions.addFigure(triangle);
   };
 
   const handleAddText = () => {
-    const center = canvas.getCenterPoint();
     const text = new fabric.Textbox("Text", {
-      fill: "gray",
+      ...createBaseFigureConfig(),
       width: 100,
       height: 100,
-      top: center.y,
-      left: center.x,
-    }).toObject();
+    }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure({
-      type: "Textbox",
-      ...text,
-    });
+    mainStoreActions.addFigure(text);
   };
 
   return (
