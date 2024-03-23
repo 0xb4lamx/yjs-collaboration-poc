@@ -4,22 +4,22 @@ import { Awareness } from "y-protocols/awareness";
 import { Figure, User } from "../domain";
 import { FabricObject } from "fabric";
 import { nanoid } from "nanoid";
+import * as Y from "yjs";
 
 export const useMainStore = create(() => ({
   isConnected: false,
   myUserId: "",
   canvas: new Canvas() as Canvas,
-  awareness: undefined as Awareness | undefined,
   users: [] as User[],
   zoom: 100,
   figures: [] as Figure[],
-  renderedFigureMap: new Map<
-    string,
-    {
-      timestamp: number;
-      figure: FabricObject;
-    }
-  >(),
+  renderedFigureMap: new Map<string, FabricObject>(),
+
+  // yjs
+  awareness: undefined as Awareness | undefined,
+  yDoc: new Y.Doc(),
+  figureIds: new Y.Array<string>(),
+  // figureConfigMap: new Y.Map<Y.Map<any>>(),
 }));
 
 const { setState } = useMainStore;
@@ -28,13 +28,12 @@ export const mainStoreActions = {
   setZoom: (zoom: number) => setState({ zoom }),
 
   // figures
-  addFigure: (figure: Omit<Figure, "id" | "timestamp">) =>
+  addFigure: (figure: Omit<Figure, "id">) =>
     setState((state) => ({
       figures: [
         ...state.figures,
         {
           id: nanoid(),
-          timestamp: Date.now(),
           ...figure,
         },
       ],
@@ -51,8 +50,6 @@ export const mainStoreActions = {
   // renderedFigureMap
   setRenderedFigure: (id: string, figure: FabricObject) =>
     setState((state) => ({
-      renderedFigureMap: new Map(
-        state.renderedFigureMap.set(id, { figure, timestamp: Date.now() })
-      ),
+      renderedFigureMap: new Map(state.renderedFigureMap.set(id, figure)),
     })),
 };

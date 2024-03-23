@@ -27,14 +27,14 @@ export const useFigureRenderer = () => {
       }
     };
 
-    figures.forEach(({ id, type, timestamp, ...config }) => {
+    figures.forEach(({ id, type, ...config }) => {
       const renderedFigure = renderedFigureMap.get(id);
 
-      if (renderedFigure?.figure && renderedFigure.timestamp !== timestamp) {
-        renderedFigure?.figure.set(config);
-        renderedFigure?.figure.set("dirty", true);
+      if (renderedFigure) {
+        renderedFigure.set(config);
+        renderedFigure.set("dirty", true);
       } else {
-        const newFigure = initNew({ type, timestamp, ...config });
+        const newFigure = initNew({ type, ...config });
         canvas.add(newFigure);
         canvas.centerObject(newFigure);
 
@@ -58,20 +58,20 @@ export const useFigureRenderer = () => {
     };
 
     figures.forEach(({ id }) => {
-      const rendered = renderedFigureMap.get(id);
-      if (rendered?.figure) {
-        rendered.figure.on("modified", () =>
-          modifiedListener(id, rendered.figure)
+      const renderedFigure = renderedFigureMap.get(id);
+      if (renderedFigure) {
+        renderedFigure.on("modified", () =>
+          modifiedListener(id, renderedFigure)
         );
       }
     });
 
     return () => {
       figures.forEach(({ id }) => {
-        const rendered = renderedFigureMap.get(id);
-        if (rendered?.figure) {
-          rendered.figure.off("modified", () =>
-            modifiedListener(id, rendered.figure)
+        const renderedFigure = renderedFigureMap.get(id);
+        if (renderedFigure) {
+          renderedFigure.off("modified", () =>
+            modifiedListener(id, renderedFigure)
           );
         }
       });

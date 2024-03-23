@@ -9,5 +9,4 @@ export type User = {
 export type Figure = {
   type: "Rect" | "Circle" | "Triangle" | "Textbox";
   id: string;
-  timestamp: number;
 };
