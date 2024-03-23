@@ -16,8 +16,8 @@ export const Col = forwardRef<HTMLDivElement, Props>(
         className={cn(
           "flex flex-col",
           expanded && "flex-1",
-          center && "items-center",
-          crossCenter && "justify-center",
+          center && "justify-center",
+          crossCenter && "items-center",
           className
         )}
         ref={ref}

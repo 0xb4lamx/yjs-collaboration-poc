@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-scroll-area": "^1.0.5",
     "autoprefixer": "^10.4.19",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "fabric": "beta",
     "lucide-react": "^0.361.0",

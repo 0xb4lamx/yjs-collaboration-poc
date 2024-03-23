@@ -9,6 +9,7 @@ export const useMainStore = create(() => ({
   canvas: new Canvas() as Canvas,
   zoom: 100,
   renderedFigureMap: new Map<string, FabricObject>(),
+  isLoggedIn: false,
 
   // yjs
   isConnected: false,

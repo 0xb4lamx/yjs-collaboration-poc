@@ -8,6 +8,7 @@ import { useInitYjsWebsocket } from "./hooks/useInitYjsWebsocket";
 import { useCanvasListeners } from "./hooks/useCanvasListeners";
 import { UsersPointer } from "./components/UsersPointer";
 import { useFigureRenderer } from "./hooks/useFigureRenderer";
+import { WelcomeDialog } from "./components/WelcomeDialog";
 
 const App = () => {
   useInitYjsWebsocket();
@@ -19,6 +20,7 @@ const App = () => {
       <Canvas />
       <LeftPanel />
       <UsersPointer />
+      <WelcomeDialog />
       <Row className="gap-3 absolute bottom-5 left-[50%] transform -translate-x-1/2">
         <UndoRedo />
         <ZoomControls />
