@@ -2,7 +2,7 @@
   "name": "server",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "y-ws": "HOST=localhost PORT=1234 bunx y-websocket"
+    "y-ws": "HOST=localhost PORT=4000 bunx y-websocket"
   },
   "dependencies": {
     "@hono/trpc-server": "^0.1.1",
