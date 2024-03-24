@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { httpBatchLink } from "@trpc/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "../lib/trpc";
 import superjson from "superjson";
 import { Toaster } from "../components/base/Toaster";
@@ -41,10 +41,28 @@ function Root() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <Outlet />
+        <Wrapper />
         <TanStackRouterDevtools />
         <Toaster richColors />
       </QueryClientProvider>
     </trpc.Provider>
   );
+}
+
+function Wrapper() {
+  const user = trpc.auth.check.useQuery();
+  useEffect(() => {
+    if (user.data) {
+      useMainStore.setState({
+        isLoggedIn: user.data.loggedIn,
+        myUserId: user.data.userId,
+      });
+    }
+  }, [user.data]);
+
+  if (user.isLoading) {
+    return null;
+  }
+
+  return <Outlet />;
 }

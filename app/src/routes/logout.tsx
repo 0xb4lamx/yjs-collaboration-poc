@@ -3,7 +3,7 @@ import { trpc } from "../lib/trpc";
 import { Col } from "../components/base/Col";
 import { Spinner } from "../components/base/Spinner";
 import { useEffect } from "react";
-import { useMainStore } from "../lib/mainStore";
+import { mainStoreActions } from "../lib/mainStore";
 
 export const Route = createFileRoute("/logout")({
   component: LogoutPage,
@@ -14,7 +14,7 @@ function LogoutPage() {
 
   const logout = trpc.auth.logout.useMutation({
     onSuccess: () => {
-      useMainStore.setState({ isLoggedIn: false });
+      mainStoreActions.user.loggedOut();
       router.navigate({
         to: "/",
       });

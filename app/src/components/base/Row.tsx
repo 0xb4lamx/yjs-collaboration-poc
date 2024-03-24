@@ -7,7 +7,7 @@ type Props = {
   expanded?: boolean;
   center?: boolean;
   crossCenter?: boolean;
-};
+} & React.HTMLAttributes<HTMLDivElement>;
 
 export const Row = forwardRef<HTMLDivElement, Props>(
   ({ expanded, center, crossCenter, className, ...rest }, ref) => {

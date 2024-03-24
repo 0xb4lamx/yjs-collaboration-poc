@@ -7,24 +7,15 @@ import {
 import { Row } from "./base/Row";
 import { Col } from "./base/Col";
 import { ScrollArea } from "./base/ScrollArea";
-import { useMainStore } from "../lib/mainStore";
+import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import { Link } from "@tanstack/react-router";
 import { nanoid } from "nanoid";
 import { AuthSection } from "./AuthSection";
+import { CirclePowerIcon } from "lucide-react";
 import { trpc } from "../lib/trpc";
-import { useEffect } from "react";
-import { Spinner } from "./base/Spinner";
 
 export const WelcomeDialog = () => {
-  const user = trpc.auth.check.useQuery();
-  useEffect(() => {
-    if (user.data) {
-      useMainStore.setState({
-        isLoggedIn: user.data.loggedIn,
-        myUserId: user.data.userId,
-      });
-    }
-  }, [user.data]);
+  const isLoggedIn = useMainStore((s) => s.isLoggedIn);
 
   return (
     <Dialog open={true}>
@@ -66,15 +57,7 @@ export const WelcomeDialog = () => {
             </Col>
 
             <Col className="w-[320px] ml-10">
-              {user.isLoading ? (
-                <Col expanded center crossCenter>
-                  <Spinner />
-                </Col>
-              ) : user.data?.loggedIn ? (
-                <RecentBoards />
-              ) : (
-                <AuthSection />
-              )}
+              {isLoggedIn ? <RecentBoards /> : <AuthSection />}
             </Col>
           </Row>
         </DialogHeader>
@@ -137,14 +120,32 @@ const dummyRecentBoards = [
 ];
 
 const RecentBoards = () => {
+  const myUserId = useMainStore((s) => s.myUserId);
+  const logout = trpc.auth.logout.useMutation({
+    onSuccess: mainStoreActions.user.loggedOut,
+  });
+
   return (
     <Col
       expanded
       className="pl-5 rounded-lg text-sm border-l border-l-slate-200"
     >
       <Col className="pl-3">
-        <p className="font-bold text-xl">Recent Boards</p>
-        <p className="">Access your recent boards</p>
+        <Row>
+          <Col expanded>
+            <p className="font-bold text-xl">Hi, {myUserId}</p>
+            <p className="">Access your recent boards</p>
+          </Col>
+          <Col
+            center
+            crossCenter
+            className="cursor-pointer"
+            onClick={() => logout.mutate()}
+          >
+            <CirclePowerIcon size={24} className="text-red-500" />
+            <p className="text-xs mt-1">logout</p>
+          </Col>
+        </Row>
       </Col>
       <ScrollArea className="flex-1 min-h-0 max-h-80 mt-6">
         {dummyRecentBoards.map((board) => (

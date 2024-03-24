@@ -80,4 +80,10 @@ export const mainStoreActions = {
       yFigureIds: params.yDoc.getArray("figureIds"),
       yFigureConfigMap: params.yDoc.getMap("figureConfigMap"),
     })),
+
+  user: {
+    loggedOut: () => setState({ isLoggedIn: false }),
+    loggedIn: (userId: string) =>
+      setState({ isLoggedIn: true, myUserId: userId }),
+  },
 };

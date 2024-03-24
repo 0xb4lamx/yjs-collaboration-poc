@@ -4,7 +4,7 @@ import { cn } from "../lib/utils";
 import { Input } from "./base/Input";
 import { Label } from "@radix-ui/react-label";
 import { trpc } from "../lib/trpc";
-import { useMainStore } from "../lib/mainStore";
+import { mainStoreActions } from "../lib/mainStore";
 import { toast } from "sonner";
 
 const caption = {
@@ -24,7 +24,7 @@ export const AuthSection = () => {
   const login = trpc.auth.login.useMutation({
     onSuccess(data) {
       toast.success("Logged in");
-      useMainStore.setState({ isLoggedIn: true, myUserId: data.userId });
+      mainStoreActions.user.loggedIn(data.userId);
     },
     onError(error) {
       toast.error(error.message);
@@ -33,12 +33,14 @@ export const AuthSection = () => {
   const register = trpc.auth.register.useMutation({
     onSuccess(data) {
       toast.success("Registered and logged in");
-      useMainStore.setState({ isLoggedIn: true, myUserId: data.userId });
+      mainStoreActions.user.loggedIn(data.userId);
     },
     onError(error) {
       toast.error(error.message);
     },
   });
+
+  const isPending = login.isPending || register.isPending;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,9 +97,7 @@ export const AuthSection = () => {
         <button
           className={cn(
             "mt-8 w-full h-10 bg-white text-slate-900 rounded-md",
-            login.isPending || register.isPending
-              ? "cursor-not-allowed opacity-50"
-              : "hover:bg-slate-100"
+            isPending ? "cursor-not-allowed" : "hover:bg-slate-100"
           )}
           type="submit"
           disabled={login.isPending || register.isPending}
