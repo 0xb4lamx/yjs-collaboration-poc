@@ -1,30 +1,26 @@
-import type { UserToken } from "web-auth-library/dist/google";
 import { Hono } from "hono";
 import { env } from "hono/adapter";
-import { logger } from "hono/logger";
+import { cors } from "hono/cors";
+
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { trpcRouter } from "./trpcRouter";
+import { logger } from "hono/logger";
 import { greet } from "shared";
-import { authMiddleware } from "./middlewares/authMiddleware";
+import { trpcRouter } from "./trpcRouter";
 
 export type HonoType = {
-  Variables: {
-    user: UserToken | null;
-  };
-  Bindings: {
-    FIREBASE_PROJECT_ID: string;
-  };
+  Variables: {};
+  Bindings: {};
 };
 
 export type TrpcContext = {
-  user: UserToken | null;
   env: HonoType["Bindings"];
 };
 
 const app = new Hono<HonoType>();
 
+app.use("*", cors());
 app.use("*", logger());
-app.use("*", authMiddleware);
+// app.use("*", authMiddleware);
 
 app.get("/", (c) => {
   return c.json({
@@ -38,7 +34,6 @@ app.use("/trpc/*", async (c) => {
     endpoint: "/trpc",
     req: c.req.raw,
     createContext: (): TrpcContext => ({
-      user: c.get("user"),
       env: env(c),
     }),
   });

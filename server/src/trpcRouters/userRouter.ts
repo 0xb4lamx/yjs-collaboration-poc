@@ -12,7 +12,6 @@ export const userRouter = router({
       return {
         id: input.id,
         name: "John Doe",
-        firebaseUid: ctx.user?.user_id ?? "not logged in",
       };
     }),
 });
