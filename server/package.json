@@ -9,9 +9,8 @@
     "db:studio": "drizzle-kit studio --port 5000"
   },
   "dependencies": {
-    "@hono/node-server": "^1.8.2",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
-    "better-sqlite3": "^9.4.3",
+    "@trpc/server": "next",
     "drizzle-orm": "^0.30.4",
     "hono": "^4.1.3",
     "nanoid": "^5.0.6",
@@ -20,10 +19,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.9",
     "@types/bun": "latest",
     "concurrently": "^8.2.2",
-    "drizzle-kit": "^0.20.14",
-    "tsx": "^3.12.2"
+    "drizzle-kit": "^0.20.14"
   }
 }
