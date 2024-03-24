@@ -18,15 +18,15 @@ COPY server/package.json /temp/dev/server/
 
 RUN cd /temp/dev && bun install --frozen-lockfile
 
-# install with --production (exclude devDependencies)
+# install server only deps with --production (exclude devDependencies)
 RUN mkdir -p /temp/prod/app
 RUN mkdir -p /temp/prod/server
 
-COPY package.json bun.lockb /temp/prod/
+COPY package.json /temp/prod/
 COPY app/package.json.empty /temp/prod/app/package.json
 COPY server/package.json /temp/prod/server/
 
-RUN cd /temp/prod && bun install --frozen-lockfile --production
+RUN cd /temp/prod && bun install --production
 
 # ----------------------------------------------------------------
 # copy node_modules from temp directory
