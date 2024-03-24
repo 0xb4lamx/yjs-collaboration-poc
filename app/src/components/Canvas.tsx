@@ -15,14 +15,6 @@ export const Canvas = () => {
     // ------------------------------
     canvasEl.current.width = window.innerWidth;
     canvasEl.current.height = window.innerHeight;
-    const resizeCanvas = () => {
-      if (!canvasEl.current) {
-        return;
-      }
-      canvasEl.current.width = window.innerWidth;
-      canvasEl.current.height = window.innerHeight;
-    };
-    window.addEventListener("resize", resizeCanvas);
 
     // ------------------------------
     // create a new fabric canvas instance
@@ -59,7 +51,6 @@ export const Canvas = () => {
     rect.selectable = false;
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
       canvas.dispose();
     };
   }, []);

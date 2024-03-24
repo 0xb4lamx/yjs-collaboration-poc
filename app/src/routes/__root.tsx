@@ -5,6 +5,8 @@ import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
 import { trpc } from "../lib/trpc";
 import superjson from "superjson";
+import { Toaster } from "../components/base/Toaster";
+import { useMainStore } from "../lib/mainStore";
 
 export const Route = createRootRoute({
   component: Root,
@@ -12,18 +14,25 @@ export const Route = createRootRoute({
 
 function Root() {
   const [queryClient] = useState(() => new QueryClient());
+
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
         httpBatchLink({
           url: import.meta.env.VITE_SERVER_URL + "/trpc",
           transformer: superjson,
-          // TODO: Uncomment this when you have authentication set up
-          // async headers() {
-          //   return {
-          //     authorization: getAuthCookie(),
-          //   };
-          // },
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            }).then((res) => {
+              if (res.status === 401) {
+                useMainStore.setState({ isLoggedIn: false });
+              }
+
+              return res;
+            });
+          },
         }),
       ],
     })
@@ -34,6 +43,7 @@ function Root() {
       <QueryClientProvider client={queryClient}>
         <Outlet />
         <TanStackRouterDevtools />
+        <Toaster richColors />
       </QueryClientProvider>
     </trpc.Provider>
   );

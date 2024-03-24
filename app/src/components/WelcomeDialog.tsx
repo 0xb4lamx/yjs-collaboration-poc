@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,16 +6,25 @@ import {
 } from "./base/Dialog";
 import { Row } from "./base/Row";
 import { Col } from "./base/Col";
-import { cn } from "../lib/utils";
-import { Input } from "./base/Input";
-import { Label } from "@radix-ui/react-label";
 import { ScrollArea } from "./base/ScrollArea";
 import { useMainStore } from "../lib/mainStore";
 import { Link } from "@tanstack/react-router";
 import { nanoid } from "nanoid";
+import { AuthSection } from "./AuthSection";
+import { trpc } from "../lib/trpc";
+import { useEffect } from "react";
+import { Spinner } from "./base/Spinner";
 
 export const WelcomeDialog = () => {
-  const isLoggedIn = useMainStore((state) => state.isLoggedIn);
+  const user = trpc.auth.check.useQuery();
+  useEffect(() => {
+    if (user.data) {
+      useMainStore.setState({
+        isLoggedIn: user.data.loggedIn,
+        myUserId: user.data.userId,
+      });
+    }
+  }, [user.data]);
 
   return (
     <Dialog open={true}>
@@ -58,80 +66,20 @@ export const WelcomeDialog = () => {
             </Col>
 
             <Col className="w-[320px] ml-10">
-              {isLoggedIn ? <RecentBoards /> : <LoginSection />}
+              {user.isLoading ? (
+                <Col expanded center crossCenter>
+                  <Spinner />
+                </Col>
+              ) : user.data?.loggedIn ? (
+                <RecentBoards />
+              ) : (
+                <AuthSection />
+              )}
             </Col>
           </Row>
         </DialogHeader>
       </DialogContent>
     </Dialog>
-  );
-};
-
-const LoginSection = () => {
-  const [mode, setMode] = useState<"Login" | "Sign Up">("Login");
-
-  return (
-    <Col
-      className={cn(
-        "p-5 h-full rounded-lg text-white text-sm",
-        "bg-gradient-to-r from-slate-900 to-gray-700 border border-slate-200"
-      )}
-    >
-      <p className="font-bold text-xl">{mode}</p>
-      <p className="">to save your boards</p>
-
-      <Col expanded center>
-        <Label htmlFor="username" className="mt-8">
-          Username
-        </Label>
-        <Input
-          id="username"
-          placeholder="Enter your username"
-          className="mt-1"
-        />
-
-        <Label htmlFor="password" className="mt-4">
-          Password
-        </Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="Enter your password"
-          className="mt-1"
-        />
-
-        <button className="mt-8 w-full h-10 bg-white text-slate-900 rounded-md">
-          {mode}
-        </button>
-      </Col>
-
-      {mode === "Login" ? (
-        <>
-          <p className="mt-8 text-xs text-slate-400 text-center">
-            Don't have an account?{" "}
-          </p>
-
-          <button
-            className="w-full h-10 bg-transparent text-white"
-            onClick={() => setMode("Sign Up")}
-          >
-            Sign up
-          </button>
-        </>
-      ) : (
-        <>
-          <p className="mt-8 text-xs text-slate-400 text-center">
-            Already have an account?{" "}
-          </p>
-          <button
-            className="w-full h-10 bg-transparent text-white"
-            onClick={() => setMode("Login")}
-          >
-            Login
-          </button>
-        </>
-      )}
-    </Col>
   );
 };
 

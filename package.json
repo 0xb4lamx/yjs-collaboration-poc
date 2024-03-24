@@ -12,10 +12,7 @@
     "dev:hono": "cd server && bun dev",
     "dev": "concurrently --names 'app,hono,y-ws' -c 'bgCyan.bold,bgYellow.bold,bgBlue.bold' 'bun dev:app' 'bun dev:hono' 'bun y-ws'"
   },
-  "devDependencies": {
-    "bun-types": "latest",
-    "concurrently": "^8.2.2"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "typescript": "^5.0.0"
   }
