@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-import { nanoid } from "nanoid";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -30,16 +29,3 @@ export function generateName() {
 export function generateColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
-
-export const routerUtils = {
-  newBoard: () => {
-    const id = nanoid();
-    window.location.href = `/board/${id}`;
-  },
-  getBoardId: () => {
-    return window.location.pathname.split("/board/")[1];
-  },
-  isHome: () => {
-    return window.location.pathname === "/";
-  },
-};

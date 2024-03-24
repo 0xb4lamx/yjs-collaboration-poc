@@ -7,19 +7,23 @@ import {
 } from "./base/Dialog";
 import { Row } from "./base/Row";
 import { Col } from "./base/Col";
-import { cn, routerUtils } from "../lib/utils";
+import { cn } from "../lib/utils";
 import { Input } from "./base/Input";
 import { Label } from "@radix-ui/react-label";
 import { ScrollArea } from "./base/ScrollArea";
 import { useMainStore } from "../lib/mainStore";
+import { Link } from "@tanstack/react-router";
+import { nanoid } from "nanoid";
 
 export const WelcomeDialog = () => {
-  const [isOpen, setIsOpen] = useState(routerUtils.isHome());
   const isLoggedIn = useMainStore((state) => state.isLoggedIn);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-screen-lg px-8 min-h-[500px]">
+    <Dialog open={true}>
+      <DialogContent
+        hideCloseButton
+        className="max-w-screen-lg px-8 min-h-[500px]"
+      >
         <DialogHeader>
           <DialogTitle>Welcome and Enjoy!</DialogTitle>
 
@@ -41,13 +45,14 @@ export const WelcomeDialog = () => {
                 className="mt-2 bg-slate-50 border border-slate-200 rounded-lg"
               >
                 <Col expanded center crossCenter>
-                  <div
-                    className="w-56 h-56 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer"
-                    onClick={() => {
-                      routerUtils.newBoard();
-                      setIsOpen(false);
+                  <Link
+                    to="/app/$boardId"
+                    params={{
+                      boardId: nanoid(),
                     }}
-                  />
+                  >
+                    <div className="w-56 h-56 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer" />
+                  </Link>
                 </Col>
               </Row>
             </Col>
@@ -73,7 +78,7 @@ const LoginSection = () => {
       )}
     >
       <p className="font-bold text-xl">{mode}</p>
-      <p className="">to access your saved boards</p>
+      <p className="">to save your boards</p>
 
       <Col expanded center>
         <Label htmlFor="username" className="mt-8">
