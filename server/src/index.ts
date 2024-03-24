@@ -26,7 +26,7 @@ export type TrpcContext = {
   env: HonoType["Bindings"];
   user: User | null;
   session: Session | null;
-  db: BetterSQLite3Database<Record<string, never>>;
+  db: typeof db;
   setCookie: (serializeValue: string) => void;
 };
 

@@ -6,16 +6,37 @@ import {
 } from "./base/Dialog";
 import { Row } from "./base/Row";
 import { Col } from "./base/Col";
-import { ScrollArea } from "./base/ScrollArea";
-import { mainStoreActions, useMainStore } from "../lib/mainStore";
-import { Link } from "@tanstack/react-router";
-import { nanoid } from "nanoid";
+import { useMainStore } from "../lib/mainStore";
+import { useRouter } from "@tanstack/react-router";
 import { AuthSection } from "./AuthSection";
-import { CirclePowerIcon } from "lucide-react";
+import { RecentBoards } from "./RecentBoards";
 import { trpc } from "../lib/trpc";
+import { toast } from "sonner";
 
 export const WelcomeDialog = () => {
   const isLoggedIn = useMainStore((s) => s.isLoggedIn);
+  const router = useRouter();
+
+  const initBoard = trpc.board.init.useMutation({
+    onSuccess: (data) => {
+      router.navigate({
+        to: `/app/$boardId`,
+        params: { boardId: data.id },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleCreateBoard = () => {
+    if (!isLoggedIn) {
+      toast.warning("Please login to create a board");
+      return;
+    }
+
+    initBoard.mutate();
+  };
 
   return (
     <Dialog open={true}>
@@ -44,14 +65,9 @@ export const WelcomeDialog = () => {
                 className="mt-2 bg-slate-50 border border-slate-200 rounded-lg"
               >
                 <Col expanded center crossCenter>
-                  <Link
-                    to="/app/$boardId"
-                    params={{
-                      boardId: nanoid(),
-                    }}
-                  >
+                  <Row onClick={handleCreateBoard}>
                     <div className="w-56 h-56 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer" />
-                  </Link>
+                  </Row>
                 </Col>
               </Row>
             </Col>
@@ -63,105 +79,5 @@ export const WelcomeDialog = () => {
         </DialogHeader>
       </DialogContent>
     </Dialog>
-  );
-};
-
-const dummyRecentBoards = [
-  {
-    id: "1",
-    name: "My first board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    name: "My second board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    name: "My third board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "4",
-    name: "My fourth board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "5",
-    name: "My fifth board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "6",
-    name: "My sixth board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "7",
-    name: "My seventh board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "8",
-    name: "My eighth board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "9",
-    name: "My ninth board",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "10",
-    name: "My tenth board",
-    createdAt: new Date().toISOString(),
-  },
-];
-
-const RecentBoards = () => {
-  const myUserId = useMainStore((s) => s.myUserId);
-  const logout = trpc.auth.logout.useMutation({
-    onSuccess: mainStoreActions.user.loggedOut,
-  });
-
-  return (
-    <Col
-      expanded
-      className="pl-5 rounded-lg text-sm border-l border-l-slate-200"
-    >
-      <Col className="pl-3">
-        <Row>
-          <Col expanded>
-            <p className="font-bold text-xl">Hi, {myUserId}</p>
-            <p className="">Access your recent boards</p>
-          </Col>
-          <Col
-            center
-            crossCenter
-            className="cursor-pointer"
-            onClick={() => logout.mutate()}
-          >
-            <CirclePowerIcon size={24} className="text-red-500" />
-            <p className="text-xs mt-1">logout</p>
-          </Col>
-        </Row>
-      </Col>
-      <ScrollArea className="flex-1 min-h-0 max-h-80 mt-6">
-        {dummyRecentBoards.map((board) => (
-          <Row
-            key={board.id}
-            className="hover:bg-slate-50 rounded-lg p-3 cursor-pointer"
-          >
-            <Col expanded>
-              <p className="text-lg">{board.name}</p>
-              <p className="text-xs text-slate-400">
-                Created at {new Date(board.createdAt).toLocaleString()}
-              </p>
-            </Col>
-          </Row>
-        ))}
-      </ScrollArea>
-    </Col>
   );
 };

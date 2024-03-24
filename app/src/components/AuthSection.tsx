@@ -63,7 +63,7 @@ export const AuthSection = () => {
       )}
     >
       <p className="text-white font-bold text-xl">{mode}</p>
-      <p className="text-white">to save your boards</p>
+      <p className="text-white">to create or access your boards</p>
 
       <form
         className="flex-1 flex flex-col justify-center"

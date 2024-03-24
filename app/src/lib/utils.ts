@@ -29,3 +29,12 @@ export function generateName() {
 export function generateColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
+
+// formate date
+export function formatDate(date: Date) {
+  return date.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
