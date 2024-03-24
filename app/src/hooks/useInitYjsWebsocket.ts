@@ -1,30 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
 import { generateColor, generateName } from "../lib/utils";
 import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import { User } from "../domain";
-import { nanoid } from "nanoid";
 
 export const useInitYjsWebsocket = (boardId: string) => {
   const roomName = boardId;
-  const isInitialRender = useRef(true);
+  const myUserId = useMainStore((s) => s.myUserId);
 
   useEffect(() => {
     if (!roomName) return;
-
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      return;
-    }
 
     // --------------------------------
     // Initialize Yjs
     // --------------------------------
     const yDoc = new Y.Doc();
     const wsProvider = new WebsocketProvider(
-      import.meta.env.VITE_WS_URL,
+      import.meta.env.PROD
+        ? "wss://" + window.location.host + "/ws"
+        : "ws://" + import.meta.env.VITE_SERVER_URL + "/ws",
       roomName,
       yDoc
     );
@@ -38,7 +34,6 @@ export const useInitYjsWebsocket = (boardId: string) => {
     // --------------------------------
 
     const awareness = wsProvider.awareness;
-    const myUserId = nanoid();
     mainStoreActions.setupYjs({
       awareness,
       myUserId,
@@ -68,5 +63,5 @@ export const useInitYjsWebsocket = (boardId: string) => {
       awareness.off("change", awarenessChangeHandler);
       wsProvider.destroy();
     };
-  }, []);
+  }, [roomName, myUserId]);
 };

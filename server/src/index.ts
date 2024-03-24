@@ -1,6 +1,5 @@
-import { serve } from "@hono/node-server";
-import { Hono } from "hono";
 import { env } from "hono/adapter";
+import { serveStatic } from "hono/bun";
 import { getCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
@@ -10,9 +9,12 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { lucia } from "./lib/auth";
 import { db } from "./lib/db";
 import { trpcRouter } from "./trpcRouter";
+// @ts-ignore
+import { setupWSConnection } from "y-websocket/bin/utils";
 
-import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import type { Session, User } from "lucia";
+import { parseNameFromPath } from "./lib/utils";
+import { HonoWithSockets } from "./lib/honoWithSocket";
 
 export type HonoType = {
   Variables: {
@@ -30,19 +32,20 @@ export type TrpcContext = {
   setCookie: (serializeValue: string) => void;
 };
 
-const app = new Hono<HonoType>();
-app.use("*", logger());
+const server = new HonoWithSockets<HonoType>();
+server.api.use("*", logger());
 
-app.use(
+server.api.use(
   "*",
   cors({
     origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
-app.use("*", csrf());
 
-app.use("*", async (c, next) => {
+server.api.use("*", csrf());
+
+server.api.use("/trpc/*", async (c, next) => {
   const cookieName = lucia.sessionCookieName;
   const sessionId = getCookie(c, cookieName) ?? null;
 
@@ -72,7 +75,7 @@ app.use("*", async (c, next) => {
   return next();
 });
 
-app.use("/trpc/*", async (c) => {
+server.api.use("/trpc/*", async (c) => {
   const res = fetchRequestHandler({
     router: trpcRouter,
     endpoint: "/trpc",
@@ -91,10 +94,20 @@ app.use("/trpc/*", async (c) => {
   return res;
 });
 
-const port = 3000;
-console.log(`Server is running on port ${port}`);
+server.api.get("/ws/*", (c) => {
+  const docName = parseNameFromPath(c.req.url);
 
-serve({
-  fetch: app.fetch,
-  port,
+  return server.ws(c, {}, (ws) => {
+    setTimeout(() => {
+      setupWSConnection(ws, c.req, { docName });
+    }, 0);
+  });
 });
+
+server.api.use("/*", (c, next) => {
+  return serveStatic({ root: "./client/" })(c, next);
+});
+
+server.api.get("*", serveStatic({ path: "./client/index.html" }));
+
+server.listen(3000);

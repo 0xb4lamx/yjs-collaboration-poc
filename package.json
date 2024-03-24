@@ -7,10 +7,11 @@
     "server"
   ],
   "scripts": {
-    "y-ws": "cd server && bun y-ws",
     "dev:app": "cd app && bun dev",
-    "dev:hono": "cd server && bun dev",
-    "dev": "concurrently --names 'app,hono,y-ws' -c 'bgCyan.bold,bgYellow.bold,bgBlue.bold' 'bun dev:app' 'bun dev:hono' 'bun y-ws'"
+    "dev:server": "cd server && bun dev",
+    "dev": "concurrently --names 'app,svr' -c 'bgCyan.bold,bgYellow.bold' 'bun dev:app' 'bun dev:server'",
+    "build": "cd app && bun run build",
+    "start": "cd server && bun run serve"
   },
   "devDependencies": {},
   "peerDependencies": {

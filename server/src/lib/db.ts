@@ -1,12 +1,17 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/bun-sqlite";
 import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import * as schema from "./schema";
 
-import Database from "better-sqlite3";
+import { Database } from "bun:sqlite";
 import { sessionTable, userTable } from "./schema";
 
-const sqlite = new Database("../db/sqlite.db");
+import { mkdirSync } from "fs";
+mkdirSync("../db", { recursive: true });
+
+const sqlite = new Database("../db/sqlite.db", {
+  create: true,
+});
 
 export const db = drizzle(sqlite, { schema });
 export const adapter = new DrizzleSQLiteAdapter(db, sessionTable, userTable);

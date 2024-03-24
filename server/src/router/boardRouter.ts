@@ -5,7 +5,7 @@ import { z } from "zod";
 import { nanoid } from "nanoid";
 
 export const boardRouter = router({
-  init: authedProcedure.mutation(async ({ input, ctx }) => {
+  init: authedProcedure.mutation(async ({ ctx }) => {
     const result = await ctx.db
       .insert(boardTable)
       .values({

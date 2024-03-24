@@ -11,7 +11,6 @@ import { Row } from "../components/base/Row";
 import { useCanvasListeners } from "../hooks/useCanvasListeners";
 import { useFigureRenderer } from "../hooks/useFigureRenderer";
 import { useInitYjsWebsocket } from "../hooks/useInitYjsWebsocket";
-import { trpc } from "../lib/trpc";
 
 export const Route = createLazyFileRoute("/app/$boardId")({
   component: BoardApp,
@@ -19,11 +18,6 @@ export const Route = createLazyFileRoute("/app/$boardId")({
 
 function BoardApp() {
   const { boardId } = Route.useParams();
-
-  const userQuery = trpc.user.getById.useQuery({
-    id: "1",
-  });
-  console.log(userQuery.data);
 
   useInitYjsWebsocket(boardId);
   useCanvasListeners();

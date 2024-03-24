@@ -2,8 +2,8 @@
   "name": "server",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --clear-screen=false src/index.ts",
-    "y-ws": "HOST=localhost PORT=4000 YPERSISTENCE=../db npx y-websocket",
+    "dev": "bun run --hot src/index.ts",
+    "serve": "bun run src/index.ts",
     "db:push": "drizzle-kit push:sqlite",
     "db:generate": "drizzle-kit generate:sqlite",
     "db:studio": "drizzle-kit studio --port 5000"
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.9",
-    "@types/node": "^20.11.17",
+    "@types/bun": "latest",
     "concurrently": "^8.2.2",
     "drizzle-kit": "^0.20.14",
     "tsx": "^3.12.2"

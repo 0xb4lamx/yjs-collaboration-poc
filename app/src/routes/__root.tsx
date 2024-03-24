@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { httpBatchLink } from "@trpc/client";
 import { useEffect, useState } from "react";
 import { trpc } from "../lib/trpc";
@@ -19,7 +18,9 @@ function Root() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: import.meta.env.VITE_SERVER_URL + "/trpc",
+          url: import.meta.env.PROD
+            ? window.location.origin + "/trpc"
+            : "http://" + import.meta.env.VITE_SERVER_URL + "/trpc",
           transformer: superjson,
           fetch(url, options) {
             return fetch(url, {
@@ -42,7 +43,6 @@ function Root() {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <Wrapper />
-        <TanStackRouterDevtools />
         <Toaster richColors />
       </QueryClientProvider>
     </trpc.Provider>
