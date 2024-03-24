@@ -1,5 +1,5 @@
-import { authRouter } from "./trpcRouters/authRouter";
-import { userRouter } from "./trpcRouters/userRouter";
+import { authRouter } from "./router/authRouter";
+import { userRouter } from "./router/userRouter";
 import { router } from "./trpcServer";
 
 export const trpcRouter = router({
