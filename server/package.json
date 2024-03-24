@@ -2,7 +2,7 @@
   "name": "server",
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/index.ts",
-    "y-ws": "HOST=localhost PORT=4000 npx y-websocket",
+    "y-ws": "HOST=localhost PORT=4000 YPERSISTENCE=../db npx y-websocket",
     "db:push": "drizzle-kit push:sqlite",
     "db:generate": "drizzle-kit generate:sqlite",
     "db:studio": "drizzle-kit studio --port 5000"
