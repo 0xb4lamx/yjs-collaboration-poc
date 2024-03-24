@@ -3,7 +3,6 @@ import { router, publicProcedure } from "../trpcServer";
 import { z } from "zod";
 import { userTable } from "../lib/schema";
 import { eq } from "drizzle-orm";
-import { Argon2id } from "oslo/password";
 import { lucia } from "../lib/auth";
 
 export const authRouter = router({
@@ -33,9 +32,9 @@ export const authRouter = router({
         });
       }
 
-      const validPassword = await new Argon2id().verify(
-        existingUser.passwordHash,
-        input.password
+      const validPassword = await Bun.password.verify(
+        input.password,
+        existingUser.passwordHash
       );
 
       if (!validPassword) {
@@ -77,7 +76,7 @@ export const authRouter = router({
         });
       }
 
-      const passwordHash = await new Argon2id().hash(input.password);
+      const passwordHash = await Bun.password.hash(input.password);
 
       await ctx.db
         .insert(userTable)
