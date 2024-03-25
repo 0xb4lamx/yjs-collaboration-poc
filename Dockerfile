@@ -26,7 +26,7 @@ COPY package.json bun.lockb /temp/prod/
 COPY server/package.json /temp/prod/server/
 COPY app/package.json.empty /temp/prod/app/package.json
 
-RUN cd /temp/prod && bun install --production
+RUN cd /temp/prod && bun install --frozen-lockfile --production
 
 # ----------------------------------------------------------------
 # copy node_modules from temp directory
