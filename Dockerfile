@@ -22,6 +22,9 @@ FROM base AS release
 COPY --from=builder /usr/src/app/server server
 COPY --from=builder /usr/src/app/package.json .
 
+RUN mkdir -p node_modules/leveldown
+COPY --from=builder /usr/src/app/node_modules/leveldown node_modules/leveldown
+
 VOLUME /usr/src/app/db
 
 # run the app
