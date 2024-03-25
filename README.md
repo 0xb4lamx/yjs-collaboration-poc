@@ -1,5 +1,27 @@
-# workspaces
+# Design-Collab
 
+A simple whiteboard tool for drawing shapes, adding text, and collaborating with others in real-time.
+
+## Tech stack
+
+### Frontend
+- React
+- Vite
+- Typescript
+- Tailwind CSS
+- tRPC
+- Yjs
+- Fabric.js
+
+### Backend
+- Hono
+- tRPC
+- Lucia
+- Drizzle
+- Y-websocket
+- Bun
+
+## Get Started
 To install dependencies:
 
 ```bash
@@ -9,7 +31,5 @@ bun install
 To run:
 
 ```bash
-bun run index.ts
+bun run dev
 ```
-
-This project was created using `bun init` in bun v0.4.0. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
