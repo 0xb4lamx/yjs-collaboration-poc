@@ -5,11 +5,27 @@ RUN apk upgrade --no-cache && \
     apk add --no-cache libstdc++
 
 # ----------------------------------------------------------------
-# install and build the app
-FROM base AS builder
+# ----------------------------------------------------------------
+# install dependencies into temp directory
+# this will cache them and speed up future builds
+FROM base AS install
 
+RUN mkdir -p /temp/dev/app
+RUN mkdir -p /temp/dev/server
+
+COPY package.json bun.lockb /temp/dev/
+COPY app/package.json /temp/dev/app/
+COPY server/package.json /temp/dev/server/
+
+RUN cd /temp/dev && bun install --frozen-lockfile
+
+# ----------------------------------------------------------------
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+
+COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
-RUN bun install --frozen-lockfile
 
 ENV NODE_ENV=production
 ENV YPERSISTENCE=../db
@@ -19,11 +35,11 @@ RUN bun run build
 # ----------------------------------------------------------------
 # copy production dependencies and source code into final image
 FROM base AS release
-COPY --from=builder /usr/src/app/server server
-COPY --from=builder /usr/src/app/package.json .
+COPY --from=prerelease /usr/src/app/server server
+COPY --from=prerelease /usr/src/app/package.json .
 
 RUN mkdir -p node_modules/leveldown
-COPY --from=builder /usr/src/app/node_modules/leveldown node_modules/leveldown
+COPY --from=prerelease /usr/src/app/node_modules/leveldown node_modules/leveldown
 
 VOLUME /usr/src/app/db
 
