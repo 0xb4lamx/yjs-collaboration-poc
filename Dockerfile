@@ -22,7 +22,7 @@ RUN cd /temp/dev && bun install --frozen-lockfile
 RUN mkdir -p /temp/prod/app
 RUN mkdir -p /temp/prod/server
 
-COPY package.json /temp/prod/
+COPY package.json bun.lockb /temp/prod/
 COPY server/package.json /temp/prod/server/
 COPY app/package.json.empty /temp/prod/app/package.json
 
