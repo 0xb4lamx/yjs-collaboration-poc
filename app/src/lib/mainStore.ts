@@ -11,6 +11,11 @@ export const useMainStore = create(() => ({
   renderedFigureMap: new Map<string, FabricObject>(),
   isLoggedIn: false,
   isMenuOpen: false,
+  isFigureSettingsOpen: false,
+  selectedFigure: null as {
+    type: string;
+    id: string;
+  } | null,
 
   // yjs
   isConnected: false,
@@ -27,6 +32,9 @@ const { setState, getState } = useMainStore;
 export const mainStoreActions = {
   canvas: {
     setZoom: (zoom: number) => setState({ zoom }),
+    selectFigure: (params: { type: string; id: string }) =>
+      setState({ selectedFigure: params }),
+    deselectFigure: () => setState({ selectedFigure: null }),
   },
 
   figure: {

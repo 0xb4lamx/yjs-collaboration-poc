@@ -15,6 +15,7 @@ import { ViewOnGithub } from "../components/ViewOnGithub";
 import { Header } from "../components/Header";
 import { useMainStore } from "../lib/mainStore";
 import { WelcomeDialog } from "../components/WelcomeDialog";
+import { FigureSetting } from "../components/FigureSetting";
 
 export const Route = createLazyFileRoute("/app/$boardId")({
   component: BoardApp,
@@ -35,6 +36,7 @@ function BoardApp() {
       <Header />
       <ViewOnGithub />
       <LeftPanel />
+      <FigureSetting />
       <UsersPointer />
       <Row className="gap-3 absolute bottom-5 left-[50%] transform -translate-x-1/2">
         <UndoRedo />

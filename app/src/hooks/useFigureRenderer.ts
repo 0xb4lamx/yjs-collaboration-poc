@@ -115,12 +115,27 @@ export const useFigureRenderer = () => {
         const figureModifiedCallback = () =>
           onFigureModified(id, renderedFigure);
 
+        const figureSelectedCallback = () => {
+          mainStoreActions.canvas.selectFigure({
+            id,
+            type: renderedFigure.type,
+          });
+        };
+
+        const figureDeselectedCallback = () => {
+          mainStoreActions.canvas.deselectFigure();
+        };
+
         renderedFigure.on("modified", figureModifiedCallback);
         renderedFigure.on("moving", figureModifiedCallback);
+        renderedFigure.on("selected", figureSelectedCallback);
+        renderedFigure.on("deselected", figureDeselectedCallback);
 
         return () => {
           renderedFigure.off("modified", figureModifiedCallback);
           renderedFigure.off("moving", figureModifiedCallback);
+          renderedFigure.off("selected", figureSelectedCallback);
+          renderedFigure.off("deselected", figureDeselectedCallback);
         };
       }
 
