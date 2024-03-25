@@ -48,7 +48,7 @@ export const WelcomeDialog = (props: {
         className="max-w-screen-lg px-8 min-h-[500px] outline-none"
       >
         <DialogHeader>
-          <DialogTitle>Welcome and Enjoy!</DialogTitle>
+          <DialogTitle>Welcome to Design-Collab!</DialogTitle>
 
           <Row className="h-full">
             <Col expanded>
