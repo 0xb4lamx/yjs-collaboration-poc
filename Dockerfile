@@ -12,6 +12,8 @@ COPY . .
 RUN bun install --frozen-lockfile
 
 ENV NODE_ENV=production
+ENV YPERSISTENCE=../db
+
 RUN bun run build
 
 # ----------------------------------------------------------------
