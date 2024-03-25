@@ -2,8 +2,9 @@
   "name": "server",
   "type": "module",
   "scripts": {
+    "build": "bun build src/index.ts --outdir ./out --external bun:sqlite --target bun",
+    "start": "bun run out/index.js",
     "dev": "bun run --hot src/index.ts",
-    "serve": "bun run src/index.ts",
     "db:push": "drizzle-kit push:sqlite",
     "db:generate": "drizzle-kit generate:sqlite",
     "db:studio": "drizzle-kit studio --port 5000"
