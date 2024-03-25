@@ -31,7 +31,7 @@ export const LeftPanel = () => {
       height: 100,
     }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure(rect);
+    mainStoreActions.figure.add(rect);
   };
 
   const handleAddCircle = () => {
@@ -40,7 +40,7 @@ export const LeftPanel = () => {
       radius: 50,
     }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure(circle);
+    mainStoreActions.figure.add(circle);
   };
 
   const handleAddTriangle = () => {
@@ -50,7 +50,7 @@ export const LeftPanel = () => {
       height: 100,
     }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure(triangle);
+    mainStoreActions.figure.add(triangle);
   };
 
   const handleAddText = () => {
@@ -60,7 +60,7 @@ export const LeftPanel = () => {
       height: 100,
     }).toObject(["id", "type"]);
 
-    mainStoreActions.addFigure(text);
+    mainStoreActions.figure.add(text);
   };
 
   return (

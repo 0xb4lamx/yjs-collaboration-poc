@@ -34,7 +34,7 @@ export const useInitYjsWebsocket = (boardId: string) => {
     // --------------------------------
 
     const awareness = wsProvider.awareness;
-    mainStoreActions.setupYjs({
+    mainStoreActions.yjs.setup({
       awareness,
       myUserId,
       yDoc,

@@ -25,62 +25,68 @@ export const useMainStore = create(() => ({
 const { setState, getState } = useMainStore;
 
 export const mainStoreActions = {
-  setZoom: (zoom: number) => setState({ zoom }),
-
-  // figures
-  addFigure: (figure: Figure) => {
-    const state = getState();
-
-    const yConfig = new Y.Map();
-    Object.entries(figure).forEach(([key, value]) => {
-      yConfig.set(key, value);
-    });
-
-    state.yDoc.transact(() => {
-      state.yFigureIds.push([figure.id]);
-      state.yFigureConfigMap.set(figure.id, yConfig);
-    });
+  canvas: {
+    setZoom: (zoom: number) => setState({ zoom }),
   },
-  updateFigure: (id: string, figure: Figure) => {
-    const state = getState();
-    const yConfig = state.yFigureConfigMap.get(id);
 
-    if (yConfig) {
-      state.yDoc.transact(() => {
-        Object.entries(figure).forEach(([key, value]) => {
-          yConfig.set(key, value);
-        });
+  figure: {
+    add: (figure: Figure) => {
+      const state = getState();
+
+      const yConfig = new Y.Map();
+      Object.entries(figure).forEach(([key, value]) => {
+        yConfig.set(key, value);
       });
-    }
-  },
-  removeFigure: (id: string) => {
-    const state = getState();
-    state.yDoc.transact(() => {
-      state.yFigureIds.delete(state.yFigureIds.toArray().indexOf(id));
-      state.yFigureConfigMap.delete(id);
-    });
+
+      state.yDoc.transact(() => {
+        state.yFigureIds.push([figure.id]);
+        state.yFigureConfigMap.set(figure.id, yConfig);
+      });
+    },
+    update: (id: string, figure: Figure) => {
+      const state = getState();
+      const yConfig = state.yFigureConfigMap.get(id);
+
+      if (yConfig) {
+        state.yDoc.transact(() => {
+          Object.entries(figure).forEach(([key, value]) => {
+            yConfig.set(key, value);
+          });
+        });
+      }
+    },
+    remove: (id: string) => {
+      const state = getState();
+      state.yDoc.transact(() => {
+        state.yFigureIds.delete(state.yFigureIds.toArray().indexOf(id));
+        state.yFigureConfigMap.delete(id);
+      });
+    },
   },
 
-  // renderedFigureMap
-  setRenderedFigure: (id: string, figure: FabricObject) =>
-    setState((state) => ({
-      renderedFigureMap: new Map(state.renderedFigureMap.set(id, figure)),
-    })),
-  removeRenderedFigure: (id: string) =>
-    setState((state) => {
-      const newMap = new Map(state.renderedFigureMap);
-      newMap.delete(id);
-      return { renderedFigureMap: newMap };
-    }),
+  renderedFigure: {
+    set: (id: string, figure: FabricObject) =>
+      setState((state) => ({
+        renderedFigureMap: new Map(state.renderedFigureMap.set(id, figure)),
+      })),
+    remove: (id: string) =>
+      setState((state) => {
+        const newMap = new Map(state.renderedFigureMap);
+        newMap.delete(id);
+        return { renderedFigureMap: newMap };
+      }),
+  },
 
-  setupYjs: (params: { awareness: Awareness; myUserId: string; yDoc: Y.Doc }) =>
-    setState(() => ({
-      awareness: params.awareness,
-      myUserId: params.myUserId,
-      yDoc: params.yDoc,
-      yFigureIds: params.yDoc.getArray("figureIds"),
-      yFigureConfigMap: params.yDoc.getMap("figureConfigMap"),
-    })),
+  yjs: {
+    setup: (params: { awareness: Awareness; myUserId: string; yDoc: Y.Doc }) =>
+      setState(() => ({
+        awareness: params.awareness,
+        myUserId: params.myUserId,
+        yDoc: params.yDoc,
+        yFigureIds: params.yDoc.getArray("figureIds"),
+        yFigureConfigMap: params.yDoc.getMap("figureConfigMap"),
+      })),
+  },
 
   user: {
     loggedOut: () => setState({ isLoggedIn: false }),

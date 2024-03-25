@@ -43,7 +43,7 @@ export const useFigureRenderer = () => {
             const figure = renderedFigureMap.get(id);
             if (figure) {
               canvas.remove(figure);
-              mainStoreActions.removeRenderedFigure(id);
+              mainStoreActions.renderedFigure.remove(id);
             }
           });
       }
@@ -71,7 +71,7 @@ export const useFigureRenderer = () => {
               const newFigure = initNew(jsonConfig);
 
               canvas.add(newFigure);
-              mainStoreActions.setRenderedFigure(id, newFigure);
+              mainStoreActions.renderedFigure.set(id, newFigure);
             }
           };
 
@@ -102,7 +102,7 @@ export const useFigureRenderer = () => {
       id: string,
       figureObject: fabric.FabricObject
     ) => {
-      mainStoreActions.updateFigure(id, {
+      mainStoreActions.figure.update(id, {
         id,
         ...figureObject.toObject(),
       });

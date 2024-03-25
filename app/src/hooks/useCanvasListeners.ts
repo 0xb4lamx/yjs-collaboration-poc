@@ -31,7 +31,7 @@ export const useCanvasListeners = () => {
     const keyDownHandler = (e: KeyboardEvent) => {
       if (e.key === "Delete") {
         const activeObject = canvas.getActiveObject() as unknown as Figure;
-        mainStoreActions.removeFigure(activeObject.id);
+        mainStoreActions.figure.remove(activeObject.id);
       }
     };
 

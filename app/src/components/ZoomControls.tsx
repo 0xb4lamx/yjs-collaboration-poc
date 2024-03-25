@@ -28,7 +28,7 @@ export const ZoomControls = () => {
       }
 
       canvas.zoomToPoint(point, newZoom / 100);
-      mainStoreActions.setZoom(newZoom);
+      mainStoreActions.canvas.setZoom(newZoom);
     };
 
     canvas.on("mouse:wheel", handleWheel);
@@ -46,12 +46,12 @@ export const ZoomControls = () => {
 
   const handleZoomIn = () => {
     zoomToCenter(zoom + increment);
-    mainStoreActions.setZoom(zoom + increment);
+    mainStoreActions.canvas.setZoom(zoom + increment);
   };
 
   const handleZoomOut = () => {
     zoomToCenter(zoom - increment);
-    mainStoreActions.setZoom(zoom - increment);
+    mainStoreActions.canvas.setZoom(zoom - increment);
   };
 
   return (
