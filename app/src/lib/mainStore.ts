@@ -10,6 +10,7 @@ export const useMainStore = create(() => ({
   zoom: 100,
   renderedFigureMap: new Map<string, FabricObject>(),
   isLoggedIn: false,
+  isMenuOpen: false,
 
   // yjs
   isConnected: false,

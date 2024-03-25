@@ -17,16 +17,10 @@ import { Route as LogoutImport } from './routes/logout'
 
 // Create Virtual Routes
 
-const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const AppBoardIdLazyImport = createFileRoute('/app/$boardId')()
 
 // Create/Update Routes
-
-const AboutLazyRoute = AboutLazyImport.update({
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
 const LogoutRoute = LogoutImport.update({
   path: '/logout',
@@ -55,10 +49,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogoutImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      preLoaderRoute: typeof AboutLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/app/$boardId': {
       preLoaderRoute: typeof AppBoardIdLazyImport
       parentRoute: typeof rootRoute
@@ -71,7 +61,6 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   LogoutRoute,
-  AboutLazyRoute,
   AppBoardIdLazyRoute,
 ])
 

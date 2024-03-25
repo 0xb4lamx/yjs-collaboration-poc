@@ -11,6 +11,10 @@ import { Row } from "../components/base/Row";
 import { useCanvasListeners } from "../hooks/useCanvasListeners";
 import { useFigureRenderer } from "../hooks/useFigureRenderer";
 import { useInitYjsWebsocket } from "../hooks/useInitYjsWebsocket";
+import { ViewOnGithub } from "../components/ViewOnGithub";
+import { Header } from "../components/Header";
+import { useMainStore } from "../lib/mainStore";
+import { WelcomeDialog } from "../components/WelcomeDialog";
 
 export const Route = createLazyFileRoute("/app/$boardId")({
   component: BoardApp,
@@ -19,6 +23,8 @@ export const Route = createLazyFileRoute("/app/$boardId")({
 function BoardApp() {
   const { boardId } = Route.useParams();
 
+  const isMenuOpen = useMainStore((state) => state.isMenuOpen);
+
   useInitYjsWebsocket(boardId);
   useCanvasListeners();
   useFigureRenderer();
@@ -26,12 +32,19 @@ function BoardApp() {
   return (
     <Col className="bg-gray-100 h-screen relative">
       <Canvas />
+      <Header />
+      <ViewOnGithub />
       <LeftPanel />
       <UsersPointer />
       <Row className="gap-3 absolute bottom-5 left-[50%] transform -translate-x-1/2">
         <UndoRedo />
         <ZoomControls />
       </Row>
+
+      <WelcomeDialog
+        isOpen={isMenuOpen}
+        onOpenChange={(isMenuOpen) => useMainStore.setState({ isMenuOpen })}
+      />
     </Col>
   );
 }

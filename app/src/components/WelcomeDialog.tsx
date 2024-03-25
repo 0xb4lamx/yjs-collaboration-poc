@@ -13,7 +13,10 @@ import { RecentBoards } from "./RecentBoards";
 import { trpc } from "../lib/trpc";
 import { toast } from "sonner";
 
-export const WelcomeDialog = () => {
+export const WelcomeDialog = (props: {
+  isOpen: boolean;
+  onOpenChange?: (value: boolean) => void;
+}) => {
   const isLoggedIn = useMainStore((s) => s.isLoggedIn);
   const router = useRouter();
 
@@ -39,10 +42,10 @@ export const WelcomeDialog = () => {
   };
 
   return (
-    <Dialog open={true}>
+    <Dialog open={props.isOpen} onOpenChange={props.onOpenChange}>
       <DialogContent
         hideCloseButton
-        className="max-w-screen-lg px-8 min-h-[500px]"
+        className="max-w-screen-lg px-8 min-h-[500px] outline-none"
       >
         <DialogHeader>
           <DialogTitle>Welcome and Enjoy!</DialogTitle>

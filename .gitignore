@@ -170,3 +170,5 @@ dist
 
 db/
 server/client/
+
+.DS_Store

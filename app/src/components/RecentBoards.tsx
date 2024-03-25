@@ -5,10 +5,11 @@ import { mainStoreActions, useMainStore } from "../lib/mainStore";
 import { CirclePowerIcon } from "lucide-react";
 import { trpc } from "../lib/trpc";
 import { formatDate } from "../lib/utils";
-import { Link } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 
 export const RecentBoards = () => {
   const myUserId = useMainStore((s) => s.myUserId);
+  const router = useRouter();
 
   const logout = trpc.auth.logout.useMutation({
     onSuccess: mainStoreActions.user.loggedOut,
@@ -38,10 +39,15 @@ export const RecentBoards = () => {
     return (
       <ScrollArea className="flex-1 min-h-0 max-h-80 mt-6">
         {listBoard.data.map((board) => (
-          <Link
+          <Col
             key={board.id}
-            to={"/app/$boardId"}
-            params={{ boardId: board.id }}
+            onClick={() => {
+              router.navigate({
+                to: "/app/$boardId",
+                params: { boardId: board.id },
+              });
+              useMainStore.setState({ isMenuOpen: false });
+            }}
           >
             <Col
               expanded
@@ -52,7 +58,7 @@ export const RecentBoards = () => {
                 Created at {formatDate(board.createdAt)}
               </p>
             </Col>
-          </Link>
+          </Col>
         ))}
       </ScrollArea>
     );
